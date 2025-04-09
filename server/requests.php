@@ -52,7 +52,8 @@ if (isset($_POST['login'])) {
     $user = $result->fetch_assoc();
 
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['name'] = ["id" => $user['id'], 'name' => $user['name'], 'email' => $user['email']];
+        $_SESSION['id'] = $user['id'];
+        $_SESSION['name'] = ['name' => $user['name'], 'email' => $user['email']];
         header("Location: ../index.php");
         exit;
     } else {
@@ -60,25 +61,84 @@ if (isset($_POST['login'])) {
     }
 }
 
+
+if (isset($_POST['category'])) {
+    $name = $_POST['name'];
+
+
+    if (!empty($name)) {
+        $stmt = $conn->prepare("INSERT INTO category (name) VALUES (?)");
+        $stmt->bind_param("s", $name);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Category added successfully'); window.location.href='../index.php?category=true';</script>";
+        } else {
+            echo "<script>alert('Error: {$stmt->error}');</script>";
+        }
+    } else {
+        echo "<script>alert('Category name cannot be empty');</script>";
+    }
+}
+
+
 if (isset($_POST['ask'])) {
-   echo $title = trim($_POST['title']);
-   echo $description = trim($_POST['description']);
-   echo $category_id = $_POST['category_id'];
-   echo $user_id = $_SESSION['id'] ?? null;
+    $title = trim($_POST['title']);
+    $description = trim($_POST['description']);
+    $category_id = $_POST['category_id'];
+    $user_id = $_SESSION['id'] ?? null;
 
-   
-    // if (empty($title) || empty($description) || empty($category_id)) {
-    //     echo "<script>alert('All fields are required'); window.location.href = '../index.php?ask=true';</script>";
-    //     exit;
-    // }
+    if (!$user_id) {
+        echo "<script>alert('You must be logged in to ask a question'); window.location.href = '../index.php?login=true';</script>";
+        exit;
+    }
 
-    // // Now insert the question
-    // $stmt = $conn->prepare("INSERT INTO questions (title, description, category_id, user_id) VALUES (?, ?, ?, ?)");
-    // $stmt->bind_param("ssii", $title, $description, $category_id, $user_id);
+    if (empty($title) || empty($description) || empty($category_id)) {
+        echo "<script>alert('All fields are required'); window.location.href = '../index.php?ask=true';</script>";
+        exit;
+    }
 
-    // if ($stmt->execute()) {
-    //     echo "<script>alert('Question submitted successfully'); window.location.href = '../index.php';</script>";
-    // } else {
-    //     echo "<script>alert('Error: " . $stmt->error . "');</script>";
-    // }
+    $stmt = $conn->prepare("INSERT INTO questions (title, discription, category_id, user_id) VALUES (?, ?, ?, ?)");
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param("ssii", $title, $description, $category_id, $user_id);
+
+    if ($stmt->execute()) {
+        echo "<script>alert('Question submitted successfully'); window.location.href = '../index.php';</script>";
+    } else {
+        echo "<script>alert('Error: " . $stmt->error . "');</script>";
+    }
+}
+
+
+
+if (isset($_POST['submit_answer'])) {
+
+    $answer = trim($_POST['answer']);
+    $question_id = $_POST['question_id'];
+    $user_id = $_SESSION['id'] ?? null;
+
+    if (!$user_id) {
+        echo "<script>alert('You must be logged in to submit an answer'); window.location.href = '../index.php?login=true';</script>";
+        exit;
+    }
+
+    if (!empty($answer) && !empty($question_id)) {
+        $stmt = $conn->prepare("INSERT INTO answers (answer, question_id, user_id) VALUES (?, ?, ?)");
+        if (!$stmt) {
+            die("Prepare failed: " . $conn->error);
+        }
+
+        $stmt->bind_param("sii", $answer, $question_id, $user_id);
+
+        if ($stmt->execute()) {
+            header("Location: ../index.php?id=" . $question_id);
+            exit;            
+        } else {
+            echo "<script>alert('Error submitting your answer.'); window.history.back();</script>";
+        }
+    } else {
+        echo "<script>alert('All fields are required.'); window.history.back();</script>";
+    }
 }
