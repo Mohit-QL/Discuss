@@ -15,3 +15,5 @@
         <button type="submit" class="btn btn-primary sm-3 col-6 mb-3 offset-sm-3" name="login">Login</button>
     </form>
 </div>
+
+<!-- $loginUrl = $helper->getLoginUrl('http://localhost/Discuss/fb-callback.php', $permissions); -->
