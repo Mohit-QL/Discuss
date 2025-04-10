@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./public/3593455.png">
     <title>Discuss</title>
+
     <?php include './client/commonFiles.php'; ?>
 </head>
 
@@ -26,7 +28,13 @@
     } elseif (isset($_GET['id'])) {
         $id = $_GET['id'];
         include './client/question_details.php';
-    }else{
+    } elseif (isset($_GET['myquestions'])) {
+        include './client/my_questions.php';
+    } elseif (isset($_GET['latest'])) {
+        include './client/questions.php';
+    } elseif (isset($_GET['search'])) {
+        include './client/questions.php';
+    } else {
         include './client/questions.php';
     }
 

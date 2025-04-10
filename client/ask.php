@@ -13,13 +13,13 @@ if (!isset($_SESSION['id'])) {
 
         <div class="sm-3 col-6 mb-3 offset-sm-3">
             <label for="title" class="form-label">Title</label>
-            <input type="title" class="form-control" id="title" placeholder="Ask Your Question" name="title">
+            <input type="title" class="form-control" id="title" placeholder="Ask Your Question" name="title" required>
         </div>
 
 
         <div class="sm-3 mb-3 col-6 offset-sm-3">
             <label for="discription" class="form-label">Discription</label>
-            <textarea class="form-control" id="discription" name="description" rows="3" placeholder="Describe Your Question"></textarea>
+            <textarea class="form-control" id="discription" name="description" rows="3" placeholder="Describe Your Question" required></textarea>
         </div>
 
 

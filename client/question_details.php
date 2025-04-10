@@ -60,8 +60,33 @@ if (!$question) {
             </div>
         </div>
 
-        <div class="col-md-5">
-           
+        <div class="col-md-1"></div>
+
+        <div class="col-md-4">
+            <h5 class="my-4" style="color: #2B2A5B;">Related Questions For :- <?= ucfirst($question['category_name']) ?></h5>
+
+            <?php
+            $related_stmt = $conn->prepare("SELECT id, title FROM questions WHERE category_id = ? AND id != ?");
+            $related_stmt->bind_param("ii", $question['category_id'], $question['id']);
+            $related_stmt->execute();
+            $related_result = $related_stmt->get_result();
+
+            if ($related_result && $related_result->num_rows > 0):
+                while ($related = $related_result->fetch_assoc()):
+            ?>
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <a href="?id=<?= $related['id'] ?>" class="text-decoration-none">
+                                <h6 class="card-title text-primary mb-0"><?= htmlspecialchars($related['title']) ?></h6>
+                            </a>
+                        </div>
+                    </div>
+                <?php
+                endwhile;
+            else:
+                ?>
+                <p class="text-muted">No related questions found in <?= ucfirst($question['category_name']) ?> category.</p>
+            <?php endif; ?>
         </div>
     </div>
 </div>
