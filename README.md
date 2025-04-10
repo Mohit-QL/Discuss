@@ -14,8 +14,3 @@
 - 🗑️ Delete your own questions
 - ✅ Responsive and modern UI (Bootstrap 5)
 - 🧠 Admin-friendly structure for extending features
-
----
-
-## 📂 Project Structure
-
