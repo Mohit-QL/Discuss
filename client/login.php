@@ -1,7 +1,7 @@
 <div class="container">
     <h1 class="mb-4 offset-sm-3 my-5">Login</h1>
 
-    <form method="POST" action="./server/requests.php">
+    <form method="POST" action="server/requests.php">
 
         <div class="sm-3 col-6 mb-3 offset-sm-3">
             <label for="email" class="form-label">Email</label>
@@ -15,5 +15,3 @@
         <button type="submit" class="btn btn-primary sm-3 col-6 mb-3 offset-sm-3" name="login">Login</button>
     </form>
 </div>
-
-<!-- $loginUrl = $helper->getLoginUrl('http://localhost/Discuss/fb-callback.php', $permissions); -->

@@ -54,6 +54,8 @@ if (isset($_POST['login'])) {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['id'] = $user['id'];
         $_SESSION['name'] = ['name' => $user['name'], 'email' => $user['email']];
+
+    
         header("Location: ../index.php");
         exit;
     } else {
@@ -134,7 +136,7 @@ if (isset($_POST['submit_answer'])) {
 
         if ($stmt->execute()) {
             header("Location: ../index.php?id=" . $question_id);
-            exit;            
+            exit;
         } else {
             echo "<script>alert('Error submitting your answer.'); window.history.back();</script>";
         }

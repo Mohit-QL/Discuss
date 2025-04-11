@@ -1,4 +1,7 @@
 <?php
+
+ob_start(); // Start output buffering
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,17 +14,8 @@ if (!isset($_SESSION['id'])) {
 
 $user_id = $_SESSION['id'];
 
-$category_result = $conn->query("SELECT * FROM category");
-
-if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])) {
-    $category_id = $_GET['category_id'];
-    $query = "SELECT q.*, c.name as category_name, u.name as user_name
-              FROM questions q
-              JOIN category c ON q.category_id = c.id
-              JOIN users u ON q.user_id = u.id
-              WHERE q.user_id = $user_id AND c.id = $category_id
-              ORDER BY q.id DESC";
-} elseif (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+// ✅ Handle deletion before any output
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $delete_id = $_GET['delete'];
 
     $check = $conn->query("SELECT id FROM questions WHERE id = $delete_id AND user_id = $user_id");
@@ -31,6 +25,19 @@ if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])) {
         header("Location: index.php?myquestions=true&deleted=true");
         exit();
     }
+}
+
+$category_result = $conn->query("SELECT * FROM category");
+
+// Question query
+if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])) {
+    $category_id = $_GET['category_id'];
+    $query = "SELECT q.*, c.name as category_name, u.name as user_name
+              FROM questions q
+              JOIN category c ON q.category_id = c.id
+              JOIN users u ON q.user_id = u.id
+              WHERE q.user_id = $user_id AND c.id = $category_id
+              ORDER BY q.id DESC";
 } else {
     $query = "SELECT q.*, c.name as category_name, u.name as user_name
               FROM questions q
@@ -42,7 +49,7 @@ if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])) {
 
 $result = $conn->query($query);
 ?>
-
+<!-- your HTML content starts here... -->
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-7">
@@ -82,7 +89,7 @@ $result = $conn->query($query);
                         if (alert) {
                             alert.style.display = 'none';
                         }
-                    }, 2000); 
+                    }, 2000);
                 </script>
             <?php endif; ?>
 
@@ -113,3 +120,4 @@ $result = $conn->query($query);
         </div>
     </div>
 </div>
+<?php ob_end_flush(); ?>

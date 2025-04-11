@@ -1,3 +1,10 @@
+<?php
+ob_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mx-auto w-100" style="max-width: 1698px; padding: 10px 0;">
